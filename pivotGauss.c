@@ -1,183 +1,152 @@
-#include <stdio.h>
 #include <math.h>
-#define t 4
+#include <stdio.h>
+#define taille 3
 
 
 
-
-
-
-
-
-
-int matId[t][t];
-int mat1[t][t] = {
-  {1, 1, 0},
-  {1, 0, 1},
-  {0, 0, 0}};
-
-/*{
-                    {1, 0, 0, 1, 1, 1, 1, 1, 0, 0 },
-                    {1, 0, 1, 0, 1, 0, 1, 0, 0, 1 },
-                    {0, 0, 0, 1, 1, 1, 1, 1, 1, 1 },
-                    {1, 1, 0, 0, 0, 1, 0, 1, 1, 0 },
-                    {1, 1, 0, 1, 0, 0, 0, 1, 1, 0 },
-                    {1, 0, 1, 0, 1, 1, 0, 1, 1 ,0 },
-                    {1, 0, 1, 1, 0, 0, 0, 1, 0 ,0 },
-                    {1, 1, 0, 1, 0, 0, 1, 0, 1 ,0 },
-                    {1, 1, 1, 1, 1, 1, 1, 0, 1 ,0 },
-                    {1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-                  };*/
-int NewMat[t][2*t];
-
-
-void afficherMatrice()
+void print_mat(int n , int *aorig)
 {
-    int i,j;
-    for (i=0;i<t;i++)
-    {
-        for (j=0;j<t;j++)
-        {
-            printf("%d  ",mat1[i][j]);
-        }
-        printf("\n" );
-    }
+	 int i,j;
+	for (i = 0; i < n; ++i) {
+		for (j = 0; j < n; ++j) {
+			printf("%8.1d", aorig[j+i*n]);
+		}
+		printf("\n");
+	}
 }
-
-void afficherMatriceIdentite()
+int gjinv (int *a, int n, int *b)
 {
-    int i,j;
-    for (i=0;i<t;i++)
+	int i, j, k, p;
+	int f, g, tol;
+	if (n < 1) return -1;  /* Function Body */
+	f = 0;  /* Frobenius norm of a */
+	for (i = 0; i < n; ++i)
+  {
+		for (j = 0; j < n; ++j)
     {
-        for (j=0;j<t;j++)
-        {
-            printf("%d  ",matId[i][j]);
-        }
-        printf("\n" );
-    }
-}
+			g = a[j+i*n];
+			f += g * g;
+		}
+	}
+
+	printf(" g %d et f  %d\n",g,f);
+	f = sqrt(f);
+	tol = f * 2.2204460492503131e-016;
+
+	printf(" g %d et f %d tol %d\n",g,f,tol);
+	for (i = 0; i < n; ++i)
+  {  /* Set b to identity matrix. */
+		for (j = 0; j < n; ++j)
+		{
+			b[j+i*n] = (i == j) ? 1. : 0.;
+		}
+	}
+	printf(" matric identidade \n");
+	print_mat(n,b);
+	printf("\n");
+
+	// Gaus jordan
+	for (k = 0; k < n; ++k) /* Main loop */
+	{
+						f = a[k+k*n];  /* Find pivot. */
+						p = k;
+						for (i = k+1; i < n; ++i)
+						{
+										g = a[k+i*n];
+										if (g > f)
+										{
+											f = g;
+											p = i;
+										}
+						}
+
+						if (f < tol) return 1;  /* Matrix is singular. */
 
 
-void afficherMatriceInverse()
-{
-    int i,j;
-    float elem;
-    for (i=0;i<t;i++)
-    {
-        for (j=t;j<2*t;j++)
-        {
-            printf("%d  ",NewMat[i][j]);
-        }
-        printf("\n" );
-    }
-}
+						if (p != k)
+						{  /* Swap rows. */
+							for (j = k; j < n; ++j)
+							{
+								f = a[j+k*n];
+								a[j+k*n] = a[j+p*n];
+								a[j+p*n] = f;
+							}
+							for (j = 0; j < n; ++j)
+							{
+								f = b[j+k*n];
+								b[j+k*n] = b[j+p*n];
+								b[j+p*n] = f;
+							}
+						}
 
+						f = 1. / a[k+k*n];  /* Scale row so pivot is 1. */
+						for (j = k; j < n; ++j) a[j+k*n] =(a[j+k*n]* f)%2;
+						for (j = 0; j < n; ++j) b[j+k*n] =(b[j+k*n]* f)%2;
 
-
-
-
-
-
-
-
-
-void creerMatriceId()
-{
-    int i,j;
-    for (i=0;i<t;i++)
-    {
-        for (j=0;j<t;j++)
-        {
-            if (i==j)
-            {
-                matId[i][j] = 1;
-            }
-            else
-            {
-                matId[i][j] = 0;
-            }
-        }
-    }
+						for (i = 0; i < n; ++i) /* Subtract to get zeros. */
+						{
+							if (i == k) continue;
+							f = a[k+i*n];
+							for (j = k; j < n; ++j) a[j+i*n] = ((a[j+i*n])-(a[j+k*n] * f))%2;
+							for (j = 0; j < n; ++j) b[j+i*n] =((b[j+i*n]) - (b[j+k*n] * f))%2;
+						}
+	}
+	return 0;
 }
 
 
-void definirNouvelleMatrice()
+int main (void)
 {
-    int i,j;
-    i=j=0;
-    for (i=0;i<t;i++)
-    {
-        for (j=0;j<2*t;j++)
-        {
-            if (j<t)
-            {
-                NewMat[i][j] = mat1[i][j];
-            }
-            else
-            {
-                NewMat[i][j] = matId[i][j-t];
-            }
-        }
-    }
-}
+	static int aorig[taille*taille] = {1,1,1,1,0,1,1,1,1};
+	int a[taille*taille], b[taille*taille], c[taille*taille];
+	int n = taille;
+	int i, j, k, ierr;
+	for (i = 0; i < n; ++i) {
+		for (j = 0; j < n; ++j) {
+			a[j+i*n] = aorig[j+i*n];
+		}
+	}
+	ierr = gjinv (a, n, b);
+	printf("gjinv returns #%i\n\n", ierr);
+	printf("matrix:\n");
+	for (i = 0; i < n; ++i) {
+		for (j = 0; j < n; ++j) {
+			printf("%8.1d", aorig[j+i*n]);
+		}
+		printf("\n");
+	}
+	printf("\ninverse:\n");
+	for (i = 0; i < n; ++i) {
+		for (j = 0; j < n; ++j) {
+			printf("%8.1d", b[j+i*n]);
+		}
+		printf("\n");
+	}
 
-int MethodeGauss()
-{
-    int inversible = 1;
-    int k,i,colonne,colonnebis;
-    float var,var1;
-    k=0;
-    while((inversible == 1)&&(k<t))
-    {
-            if (NewMat[k][k] != 0)
-            {
-                var = NewMat[k][k];
-                for (colonne=0;colonne<2*t;colonne++)
-                {
-                    NewMat[k][colonne] = NewMat[k][colonne]/var;  //Normalisation de la ligne contenant l'élément diagonal
-                }
-                for (i=0;i<t;i++)
-                {
-                    if (i != k)
-                    {
-                        var1=NewMat[i][k];
-                        for (colonnebis=0;colonnebis<2*t;colonnebis++)
-                        {
-                            NewMat[i][colonnebis] = NewMat[i][colonnebis] - NewMat[k][colonnebis]*var1;
-                        }
-                    }
-                }
-                k++;
-            }
-            else
-            {
-                inversible = 0;
-            }
-    }
-    return inversible;
-}
-
-void modifierMatrice()
-{
-    creerMatriceId();
-    definirNouvelleMatrice();
-}
-
-int main ()
-{
-    printf("debut\n" );
-    afficherMatrice();
-    modifierMatrice();
-    if (MethodeGauss() == 1)
-    {
-        printf("Matrice inverse\n" );
-        afficherMatriceInverse();
-    }
-    else
-    {
-        printf("La matrice n'est pas inversible\n" );
-    }
-
-    printf("tout c'est bien termine\n" );
-    return 0;
+	/*
+	for (j = 0; j < n; ++j) {
+		for (k = 0; k < n; ++k) {
+			c[k+j*n] = 0.;
+			for (i = 0; i < n; ++i) {
+				c[k+j*n] += aorig[i+j*n] * b[k+i*n];
+			}
+		}
+	}
+	printf("\nmatrix @ inverse:\n");
+	for (i = 0; i < n; ++i) {
+		for (j = 0; j < n; ++j) {
+			printf("%8.1d", c[j+i*n]);
+		}
+		printf("\n");
+	}
+	ierr = gjinv (b, n, a);
+	printf("\ngjinv returns #%i\n", ierr);
+	printf("\ninverse of inverse:\n");
+	for (i = 0; i < n; ++i) {
+		for (j = 0; j < n; ++j) {
+			printf("%8.1d", a[j+i*n]);
+		}
+		printf("\n");
+	}*/
+	return 0;
 }
