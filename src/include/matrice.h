@@ -23,6 +23,7 @@ Matrix newMatrix(int nb_rows, int nb_columns);
 Elt getElt(Matrix *m, int row, int column);
 void setElt(Matrix *m, int row, int column, Elt val);
 void deleteM(Matrix *m);
+void printMatrix(Matrix *m);
 Matrix copier_matrice(Matrix *m);
 bool isTriangular(Matrix *m);
 bool isSymetric(Matrix *m);
@@ -39,6 +40,4 @@ void reduire_pivot_inverse(Matrix *m,Matrix *inverse,Elt val_pivot,int ligne_piv
 void echanger_ligne(Matrix *m,int ligne1, int ligne2);
 Matrix matrice_inverse_gauss(Matrix *);
 Matrix matrice_inverse_cofacteur(Matrix *);
-
-
 #endif

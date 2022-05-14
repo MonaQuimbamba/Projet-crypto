@@ -328,40 +328,40 @@ void main_valeurPropre()
 
 int main(void)
 {
-    while(1)
-    {
-        switch(main_choixOperation())
-        {
-            case 1:
-                main_transpose();
-                break;
-            case 2:
-                main_addition();
-                break;
-            case 3:
-                main_multiplication();
-                break;
-            case 4:
-                main_calculDeterminant(choixMethodeDeterminant());
-                break;
-            case 5:
-                main_inversion(choixMethodeInversion());
-                break;
-            case 6:
-                main_systeme_lineaire();
-                break;
-            case 7:
-                main_decompositionPLU();
-                break;
-            case 8:
-                main_valeurPropre();
-                break;
-            case 0:
-                exit(EXIT_SUCCESS);
-                break;
-            default:
-                break;
-        }
-    }
+  while(1)
+  {
+      switch(main_choixOperation())
+      {
+          case 1:
+              main_transpose();
+              break;
+          case 2:
+              main_addition();
+              break;
+          case 3:
+              main_multiplication();
+              break;
+          case 4:
+              main_calculDeterminant(choixMethodeDeterminant());
+              break;
+          case 5:
+              main_inversion(choixMethodeInversion());
+              break;
+          case 6:
+              main_systeme_lineaire();
+              break;
+          case 7:
+              main_decompositionPLU();
+              break;
+          case 8:
+              main_valeurPropre();
+              break;
+          case 0:
+              exit(EXIT_SUCCESS);
+              break;
+          default:
+              break;
+      }
+  }
     return 1;
 }
