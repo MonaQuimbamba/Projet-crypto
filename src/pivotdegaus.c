@@ -5,9 +5,9 @@
 
 void main()
 {
- int augmentedmatrix[maximum][2*maximum] ;
+ float augmentedmatrix[maximum][2*maximum] ;
                                                                 /* 2D array declared to store augmented matrix */
- int temporary, r ;
+ float temporary, r ;
  int i, j, k, dimension, temp;                                  /* declaring counter variables for loops */
 
 
@@ -16,18 +16,24 @@ void main()
 
  printf("\n Enter the dimension of the matrix to be provided as input : \n");
 // scanf("%d",&
-dimension=3;
+dimension=10;
 
  /*   storing augmented matrix as a matrix of dimension
       (dimension)x(2*dimension) in 2D array  */
-  int a[3][3]={ {1, 5, 3},
-                {1, 3, 2},
-                {2,4,-6}
+  int a[10][10]={{1, 0, 0, 1, 1, 1, 1, 1, 0, 0 },
+{1, 0, 1, 0, 1, 0, 1, 0, 0, 1 },
+{0, 0, 0, 1, 1, 1, 1, 1, 1, 1 },
+{1, 1, 0, 0, 0, 1, 0, 1, 1, 0 },
+{1, 1, 0, 1, 0, 0, 0, 1, 1, 0 },
+{1, 0, 1, 0, 1, 1, 0, 1, 1 ,0 },
+{1, 0, 1, 1, 0, 0, 0, 1, 0 ,0 },
+{1, 1, 0, 1, 0, 0, 1, 0, 1 ,0 },
+{1, 1, 1, 1, 1, 1, 1, 0, 1 ,0 },
+{1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 };
  printf("\n Enter a non-singular %dx%d matrix : \n",dimension,dimension);
  for(i=0; i<dimension; i++)
   for(j=0; j<dimension; j++)
-            //scanf("%f",&
             augmentedmatrix[i][j]=a[i][j];
 
  /* augmenting with identity matrix of similar dimensions */
@@ -38,6 +44,14 @@ dimension=3;
          augmentedmatrix[i][j]=1;
       else
          augmentedmatrix[i][j]=0;
+
+   printf("\n Before Gauss-Jordan elimination, augmented matrix is : \n\n") ;
+   for(i=0; i<dimension; i++)
+   {
+    for(j=0; j<2*dimension; j++)
+              printf("  %.2f",augmentedmatrix[i][j]) ;
+    printf("\n");
+   }
 
  /* using gauss-jordan elimination */
 
@@ -67,7 +81,12 @@ if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])
             {
             r=augmentedmatrix[i][j];
             for(k=0; k<2*dimension; k++)
-              augmentedmatrix[i][k]-=(augmentedmatrix[j][k]/augmentedmatrix[j][j])*r ;
+            {
+
+              augmentedmatrix[i][k]= abs((int) (augmentedmatrix[i][k] - (augmentedmatrix[j][k]/augmentedmatrix[j][j])*r) % 2);
+
+            }
+
             }
             else
             {
@@ -82,7 +101,7 @@ if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])
  for(i=0; i<dimension; i++)
  {
   for(j=0; j<2*dimension; j++)
-            printf("  %.2d",augmentedmatrix[i][j]) ;
+            printf("  %.2f",augmentedmatrix[i][j]) ;
   printf("\n");
  }
 
@@ -94,7 +113,7 @@ if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])
  for(i=0; i<dimension; i++)
  {
   for(j=dimension; j<2*dimension; j++)
-            printf("  %.2d",augmentedmatrix[i][j]);
+            printf("  %.2f",augmentedmatrix[i][j]);
   printf("\n");
  }
 

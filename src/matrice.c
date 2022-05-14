@@ -395,12 +395,14 @@ void soustraction_gauss_inverse(Matrix *tmp_old,Matrix *old,Matrix *tmp_new,
     int i;
     for(i=colonne_pivot;i<tmp_old->nb_columns;i++)
     {
-        int val =getElt(tmp_old,j,i)-(getElt(tmp_old,ligne_pivot,i)*getElt(tmp_old,j,colonne_pivot))%2;
+
+        //augmentedmatrix[i][k]= abs((int) (augmentedmatrix[i][k] - (augmentedmatrix[j][k]/augmentedmatrix[j][j])*r) % 2);
+        int val = abs((int) (getElt(tmp_old,j,i)- getElt(tmp_old,ligne_pivot,i)*getElt(tmp_old,j,colonne_pivot))   %2);
         setElt(old,j,i,val);
     }
     for(i=0;i<tmp_new->nb_columns;i++)
     {
-        int val =getElt(tmp_new,j,i)-(getElt(tmp_new,ligne_pivot,i)*getElt(tmp_old,j,colonne_pivot))%2;
+        int val =abs ((int) (getElt(tmp_new,j,i)-getElt(tmp_new,ligne_pivot,i)*getElt(tmp_old,j,colonne_pivot))%2);
         setElt(new,j,i,val);
     }
 }
