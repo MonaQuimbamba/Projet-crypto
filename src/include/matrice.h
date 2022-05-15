@@ -10,6 +10,10 @@
 #include <stdbool.h>
 #include <math.h>
 
+
+#define maximum 1000
+#define minvalue 0.0005
+
 typedef int Elt;
 typedef struct matrix
 {
@@ -41,4 +45,8 @@ void echanger_ligne(Matrix *m,int ligne1, int ligne2);
 Matrix matrice_inverse_gauss(Matrix *);
 Matrix matrice_inverse_cofacteur(Matrix *);
 Matrix Permutation_cols(Matrix *m);
+Matrix monPivot(Matrix *m);
+Matrix startMatrix(int nb_rows,int nb_columns);
+Matrix faire_U(int size_U,int n,Matrix *m);
+int poidHamming(Matrix *m);
 #endif

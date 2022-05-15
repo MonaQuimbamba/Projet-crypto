@@ -312,7 +312,7 @@ Elt rec_det(Matrix *m, int no_row, int no_column)
     Elt det=0;
     int i,coef;
     Matrix m1 = comatrice(m,no_row,no_column);
-    printMatrix(&m1);
+    //printMatrix(&m1);
     if(m1.nb_rows==2)
     {
         det=getElt(&m1,0,0)*getElt(&m1,1,1)-getElt(&m1,1,0)*getElt(&m1,0,1);
@@ -603,4 +603,139 @@ Matrix Permutation_cols(Matrix *m)
   }
   return m2;
 
+}
+
+Matrix startMatrix(int nb_rows,int nb_columns)
+{
+    Matrix m;
+    m = newMatrix(nb_rows, nb_columns);
+    int i,j;
+    Elt elt;
+    for(i=0; i<nb_rows; i++)
+    {
+        for(j=0; j<nb_columns; j++)
+        {
+          elt=rand() & 1;
+          setElt(&m,i,j, elt);
+        }
+    }
+    return m;
+}
+
+
+Matrix monPivot(Matrix *m)
+{
+
+  int augmentedmatrix[maximum][2*maximum];
+  int temporary, r ;
+  int i, j, k, dimension, temp;
+  dimension=m->nb_rows;
+
+  Matrix inverse = startMatrix(dimension,dimension);
+  // remplir la matrix
+  for(i=0; i<dimension; i++)
+   for(j=0; j<dimension; j++)
+             augmentedmatrix[i][j]=getElt(m,i,j);
+
+  /// faire l'identite
+  for(i=0;i<dimension; i++)
+   for(j=dimension; j<2*dimension; j++)
+       if(i==j%dimension)
+          augmentedmatrix[i][j]=1;
+       else
+          augmentedmatrix[i][j]=0;
+
+  // using gauss-jordan elimination
+  for(j=0; j<dimension; j++)
+  {
+   temp=j;
+  // finding maximum jth column element in last (dimension-j) rows
+   for(i=j+1; i<dimension; i++)
+ if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])
+                         temp=i;
+
+   if(abs(augmentedmatrix[temp][j])<minvalue)
+              {
+                 printf("\n Elements are too small to deal with !!!");
+                 //return NULL;
+              }
+  // swapping row which has maximum jth column element
+   if(temp!=j)
+             for(k=0; k<2*dimension; k++)
+             {
+             temporary=augmentedmatrix[j][k] ;
+             augmentedmatrix[j][k]=augmentedmatrix[temp][k] ;
+             augmentedmatrix[temp][k]=temporary ;
+             }
+ // performing row operations to form required identity matrix out of the input matrix
+   for(i=0; i<dimension; i++)
+             if(i!=j)
+             {
+             r=augmentedmatrix[i][j];
+             for(k=0; k<2*dimension; k++)
+             {
+
+               augmentedmatrix[i][k]= abs((int) (augmentedmatrix[i][k] - (augmentedmatrix[j][k]/augmentedmatrix[j][j])*r) % 2);
+
+             }
+
+             }
+             else
+             {
+             r=augmentedmatrix[i][j];
+             for(k=0; k<2*dimension; k++)
+               augmentedmatrix[i][k]/=r ;
+             }
+
+  }
+
+  for(i=0; i<dimension; i++)
+  {
+    int val=0;
+   for(j=dimension; j<2*dimension; j++)
+   {
+     setElt(&inverse,i,val,augmentedmatrix[i][j]);
+     val++;
+   }
+
+  }
+
+  return inverse;
+
+}
+
+
+
+Matrix faire_U(int size_U,int n,Matrix *m)
+{
+   int index[size_U];
+  for(int i=0 ; i < size_U ; i++) index[i]=0;
+  srandom(time(NULL));
+  for (int i = 0; i < size_U; i++) index[i]=rand() % n;
+
+  Matrix mU = startMatrix(size_U,size_U);
+  int i,j;
+  for(i=0; i<m->nb_rows; i++)
+  {
+    int val=0;
+    for(j=0; j<size_U; j++)
+    {
+      setElt(&mU,i,val,getElt(m,i,index[j]));
+      val++;
+    }
+  }
+
+  return mU;
+
+}
+
+int poidHamming(Matrix *m)
+{
+    int poids=0;
+    int i,j;
+    for(i=0; i<m->nb_rows; i++)
+        for(j=0; j<m->nb_columns; j++)
+            if(getElt(m,i,j)==1) poids++;
+
+    return poids;
 }
