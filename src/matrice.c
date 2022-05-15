@@ -237,8 +237,8 @@ Matrix multiplication(Matrix *m1, Matrix *m2)
 	    {
 		elt=0;
 		for (k=0; k<m1->nb_columns; k++)
-		    elt += (getElt(m1,j,k)*getElt(m2,k,i))%2;
-		setElt(&m3,i,j,elt);
+		    elt +=getElt(m1,j,k)*getElt(m2,k,i);
+		setElt(&m3,i,j,abs(elt%2));
 	    }
 	return m3;
     }
@@ -577,9 +577,30 @@ void printMatrix(Matrix *m)
     {
         for(j=0; j<m->nb_columns; j++)
         {
-            printf(" %.2d ", getElt(m,i,j));
+            printf(" %d ", getElt(m,i,j));
         }
         putchar('\n');
     }
     return ;
+}
+
+Matrix Permutation_cols(Matrix *m)
+{
+  int i,j;
+  Matrix m2 = newMatrix( m->nb_rows, m->nb_rows);
+  int v=0;
+  for (i=m->nb_columns-1; i>=-1; i--)
+  {
+    for(j=0; j<m->nb_rows; j++)
+    {
+            if(i==-1)
+                  setElt(&m2,v,j,getElt(m,j,m->nb_columns-1));
+            else
+                setElt(&m2,v,j,getElt(m,j,i));
+    }
+    v++;
+
+  }
+  return m2;
+
 }

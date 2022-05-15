@@ -40,4 +40,5 @@ void reduire_pivot_inverse(Matrix *m,Matrix *inverse,Elt val_pivot,int ligne_piv
 void echanger_ligne(Matrix *m,int ligne1, int ligne2);
 Matrix matrice_inverse_gauss(Matrix *);
 Matrix matrice_inverse_cofacteur(Matrix *);
+Matrix Permutation_cols(Matrix *m);
 #endif

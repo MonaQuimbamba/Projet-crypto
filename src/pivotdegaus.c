@@ -5,9 +5,9 @@
 
 void main()
 {
- float augmentedmatrix[maximum][2*maximum] ;
+ int augmentedmatrix[maximum][2*maximum] ;
                                                                 /* 2D array declared to store augmented matrix */
- float temporary, r ;
+ int temporary, r ;
  int i, j, k, dimension, temp;                                  /* declaring counter variables for loops */
 
 
@@ -16,11 +16,16 @@ void main()
 
  printf("\n Enter the dimension of the matrix to be provided as input : \n");
 // scanf("%d",&
-dimension=10;
+dimension=3;
 
  /*   storing augmented matrix as a matrix of dimension
       (dimension)x(2*dimension) in 2D array  */
-  int a[10][10]={{1, 0, 0, 1, 1, 1, 1, 1, 0, 0 },
+  int a[3][3]={
+    {1,1,1},
+      {1,1,0},
+      {1,0,1}
+  };
+  /*{{1, 0, 0, 1, 1, 1, 1, 1, 0, 0 },
 {1, 0, 1, 0, 1, 0, 1, 0, 0, 1 },
 {0, 0, 0, 1, 1, 1, 1, 1, 1, 1 },
 {1, 1, 0, 0, 0, 1, 0, 1, 1, 0 },
@@ -30,7 +35,7 @@ dimension=10;
 {1, 1, 0, 1, 0, 0, 1, 0, 1 ,0 },
 {1, 1, 1, 1, 1, 1, 1, 0, 1 ,0 },
 {1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-};
+};*/
  printf("\n Enter a non-singular %dx%d matrix : \n",dimension,dimension);
  for(i=0; i<dimension; i++)
   for(j=0; j<dimension; j++)
@@ -49,7 +54,7 @@ dimension=10;
    for(i=0; i<dimension; i++)
    {
     for(j=0; j<2*dimension; j++)
-              printf("  %.2f",augmentedmatrix[i][j]) ;
+              printf("  %d",augmentedmatrix[i][j]) ;
     printf("\n");
    }
 
@@ -63,7 +68,7 @@ dimension=10;
 if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])
                         temp=i;
 
-  if(fabs(augmentedmatrix[temp][j])<minvalue)
+  if(abs(augmentedmatrix[temp][j])<minvalue)
              {
                 printf("\n Elements are too small to deal with !!!");
              }
@@ -101,7 +106,7 @@ if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])
  for(i=0; i<dimension; i++)
  {
   for(j=0; j<2*dimension; j++)
-            printf("  %.2f",augmentedmatrix[i][j]) ;
+            printf("  %d",augmentedmatrix[i][j]) ;
   printf("\n");
  }
 
@@ -113,7 +118,7 @@ if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])
  for(i=0; i<dimension; i++)
  {
   for(j=dimension; j<2*dimension; j++)
-            printf("  %.2f",augmentedmatrix[i][j]);
+            printf("  %d",augmentedmatrix[i][j]);
   printf("\n");
  }
 
