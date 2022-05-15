@@ -14,39 +14,44 @@ Matrix Prange_ISD(int n,int k, Matrix *m, Matrix *s)
 {
 
   int iter=50;
-  //while(iter > 0 )
+  Matrix e;
+  e.valide=false;
+  int i=0;
+  while( i < iter )
   {
 
-        Matrix mtrans =transpose(m);
-        Matrix tempPerm =Permutation_cols(&mtrans);
+        //Matrix mtrans =transpose(m);
+        //Matrix tempPerm =Permutation_cols(&mtrans);
         //printf("\nla permutation de H la matrice P  est  [%d][%d] =\n", tempPerm.nb_rows, tempPerm.nb_columns);
-        Matrix perm =transpose(&tempPerm);
-        //printMatrix(&perm);
+        Matrix perm = Permutation_alea(n);
+        printf("\nla permutation  P  est  [%d][%d] =\n", perm.nb_rows, perm.nb_columns);
+        printMatrix(&perm);
         Matrix matHP = multiplication(m,&perm);
-        //  printf("\nla mat de HP est  [%d][%d] =\n", matHP.nb_rows, matHP.nb_columns);
-        //printMatrix(&matHP);
-       Matrix matU =  faire_U(n-k,n,&matHP);
-       //printf("\nla mat U est  [%d][%d] =\n", matU.nb_rows, matU.nb_columns);
-       //printMatrix(&matU);
-      if(calcul_determinant_recursif(&matU)>0)
+        printf("\nla mat de HP est  [%d][%d] =\n", matHP.nb_rows, matHP.nb_columns);
+        printMatrix(&matHP);
+        Matrix matU =  faire_U(n-k,n,&matHP);
+        printf("\nla mat U est  [%d][%d] =\n", matU.nb_rows, matU.nb_columns);
+        printMatrix(&matU);
+      if(monPivot(&matU))
       {
-            Matrix inverse = monPivot(&matU);
-            //printf("\nla mat inverse de U^-1 est  [%d][%d] =\n", inverse.nb_rows, inverse.nb_columns);
-            //printMatrix(&inverse);
             Matrix  trans = transpose(&matU);
-            Matrix e = multiplication(s,&trans);
-            printf("afficher e \n");
-            printMatrix(&e);
-
-            printf("afficher e \n");
+            printf("\nAfficher la transpose de matU [%d][%d] =\n",trans.nb_rows,trans.nb_columns);
             printMatrix(&trans);
+            printf("\nAfficher la matrice s  [%d][%d] =\n",s->nb_rows,s->nb_columns);
+            printMatrix(s);
+            e = multiplication(s,&trans);
+            e.valide=true;
+            printf("\nAfficher la matrice e [%d][%d] =\n",e.nb_rows,e.nb_columns);
+            printMatrix(&e);
 
             if(poidHamming(&e)==LIMITE) return e;
 
       }
-      iter--;
+      i++;
   }
 
+
+  return e;
 }
 
 
@@ -64,7 +69,9 @@ int main(int argc, char const *argv[]) {
   printf("\nle vecteur S est  [%d][%d] =\n", s.nb_rows, s.nb_columns);
   printMatrix(&s);
 
-  printf(" Le resulat \n");
+
+
+
   Matrix e = Prange_ISD(n,k,&m,&s);
   if(e.valide) printMatrix(&e);
 

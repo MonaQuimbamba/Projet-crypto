@@ -605,6 +605,18 @@ Matrix Permutation_cols(Matrix *m)
 
 }
 
+Matrix Permutation_alea(int n)
+{
+  int i,j;
+  Matrix m2 = newMatrix( n, n);
+  for (i=0; i< n; i++)
+    for(j=0; j<n; j++)
+            setElt(&m2,i,j,rand() & 1);
+
+  return m2;
+
+}
+
 Matrix startMatrix(int nb_rows,int nb_columns)
 {
     Matrix m;
@@ -623,7 +635,7 @@ Matrix startMatrix(int nb_rows,int nb_columns)
 }
 
 
-Matrix monPivot(Matrix *m)
+bool monPivot(Matrix *m)
 {
 
   int augmentedmatrix[maximum][2*maximum];
@@ -656,8 +668,8 @@ Matrix monPivot(Matrix *m)
 
    if(abs(augmentedmatrix[temp][j])<minvalue)
               {
-                 printf("\n Elements are too small to deal with !!!");
-                 //return NULL;
+                // printf("\n Elements are too small to deal with !!!");
+                 return false;
               }
   // swapping row which has maximum jth column element
    if(temp!=j)
@@ -700,7 +712,7 @@ Matrix monPivot(Matrix *m)
 
   }
 
-  return inverse;
+  return true;
 
 }
 

@@ -45,8 +45,9 @@ void echanger_ligne(Matrix *m,int ligne1, int ligne2);
 Matrix matrice_inverse_gauss(Matrix *);
 Matrix matrice_inverse_cofacteur(Matrix *);
 Matrix Permutation_cols(Matrix *m);
-Matrix monPivot(Matrix *m);
+bool monPivot(Matrix *m);
 Matrix startMatrix(int nb_rows,int nb_columns);
 Matrix faire_U(int size_U,int n,Matrix *m);
 int poidHamming(Matrix *m);
+Matrix Permutation_alea(int n);
 #endif
