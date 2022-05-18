@@ -827,3 +827,49 @@ int poidHamming(Matrix *m)
 
     return poids;
 }
+
+
+Matrix createPolynome(int nb_rows,int nb_columns,int w)
+{
+    Matrix m;
+    m = newMatrix(nb_rows, nb_columns);
+    int i,j;
+    Elt elt;
+    for(i=0; i<nb_rows; i++)
+    {
+        int lig = rand() % (nb_rows -3 + 1) +3 ;
+        for(j=0; j<nb_columns; j++)
+        {
+          int col = rand() % (nb_rows -3 + 1) +3;
+          if (lig+col%2!=0 & w>0){
+            elt=1;
+              w--;
+          }
+          else elt=fillMatrixH(nb_columns);
+          setElt(&m,i,j, elt);
+
+        }
+    }
+    return m;
+}
+
+Matrix concatenationMatrix(Matrix *u,Matrix *v)
+{
+   Matrix concat = newMatrix(u->nb_rows,u->nb_columns*2);
+   int k;
+   for(int i= 0 ; i < u->nb_rows;i++)
+   {
+      k=0;
+     for(int j = 0 ; j < u->nb_columns*2;j++)
+     {
+       if(j <u->nb_columns) setElt(&concat,i,j,getElt(u,i,j));
+       else
+       {
+         setElt(&concat,i,j,getElt(v,i,k));
+         k++;
+       }
+     }
+   }
+
+   return concat;
+}

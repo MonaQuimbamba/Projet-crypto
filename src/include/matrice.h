@@ -54,4 +54,7 @@ bool verify_tab(int *tab,int val,int size_U);
 Matrix MatrixH(int nb_rows,int nb_columns);
 int fillMatrixH(int nb_columns);
 Matrix MatrixErreur(int nb_rows,int nb_columns,int t);
+Matrix createPolynome(int nb_rows,int nb_columns,int w);
+Matrix concatenationMatrix(Matrix *u,Matrix *v);
+
 #endif

@@ -1,8 +1,8 @@
-prog: main.o matrice.o
-	gcc -Wall -o prog main.o matrice.o
+prog: mdpc.o matrice.o
+	gcc -Wall -o prog mdpc.o matrice.o
 
-main.o : main.c
-	gcc -Wall -c -Wall main.c
+mdpc.o : mdpc.c
+	gcc -Wall -c -Wall mdpc.c
 
 matrice.o : matrice.c
 	gcc -c -Wall matrice.c
