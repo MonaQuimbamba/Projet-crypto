@@ -38,13 +38,53 @@ Matrix rot(Matrix *m)
 	return rot;
 }
 
+int sumPoidsCols(Matrix *m,int nbcol)
+{
+	 int sum=0;
+	 for(int i = 0 ; i < m->nb_rows; i++) sum+=getElt(m,i,nbcol);
+	 return sum;
+}
 
+
+void updateU_V(Matrix *u,Matrix *v, Matrix *m)
+{
+		int i,j;
+		int k;
+		for (i=0; i<u->nb_columns; i++)
+		{
+			k=0;
+			for (j=0; j<u->nb_rows*2; j++)
+			{
+					if(j<u->nb_rows) setElt(u,i,j,(getElt(u,i,j)+getElt(m,i,j))%2);
+					else {
+						 setElt(v,i,k,(getElt(v,i,k)+getElt(m,i,j))%2);
+					k++;
+				}
+			}
+		}
+
+}
+
+Matrix subraction_Polynome(Matrix *u,Matrix *v)
+{
+
+	Matrix res = newMatrix(1,v->nb_columns);
+
+	for(int i =0 ; i< res.nb_columns; i++)
+	{
+		if( i < u->nb_columns ) setElt(&res,0,i, abs(getElt(v,0,i) - getElt(u,0,i))%2);
+		else setElt(&res,0,i,getElt(v,0,i));
+	}
+	//for(int i=0 ;  i< res.nb_columns ; i++) printf(" u [%d] : \n", getElt(&res,0,i));
+ return res;
+}
 
 void bitFlipping(Matrix *ho, Matrix *h1,Matrix *s,int t,int w)
 {
     Matrix u = newMatrix(s->nb_rows,1);
     Matrix v = newMatrix(s->nb_rows,1);
 
+		int n = s->nb_rows;
     Matrix u_v = concatenationMatrix(&u,&v);
     printf("\nmatrice (u,v) est  [%d][%d] =\n", u_v.nb_rows, u_v.nb_columns);
     printMatrix(&u_v);
@@ -67,12 +107,12 @@ void bitFlipping(Matrix *ho, Matrix *h1,Matrix *s,int t,int w)
     printf("\nmatrice H est  [%d][%d] =\n", H.nb_rows, H.nb_columns);
     printMatrix(&H);
 
-    Matrix syndrome=s;
+     Matrix syndrome=rot(s);
 
     printf("\nmatrice syndrome est  [%d][%d] =\n", syndrome.nb_rows, syndrome.nb_columns);
     printMatrix(&syndrome);
 
-    Matrix flipped_positions =  newMatrix(1,2*s->nb_rows);
+    Matrix flipped_positions =  newMatrix(1,2*n);
     printf("\nmatrice flipped_positions est  [%d][%d] =\n", flipped_positions.nb_rows, flipped_positions.nb_columns);
     printMatrix(&flipped_positions);
 
@@ -80,7 +120,30 @@ void bitFlipping(Matrix *ho, Matrix *h1,Matrix *s,int t,int w)
     printf("\nmatrice sum est  [%d][%d] =\n", sum.nb_rows, sum.nb_columns);
     printMatrix(&sum);
 
-    /*Matrix rot_h1 = rot(h1);
+		for(int i =0 ; i < 2*n ; i++) {
+			  if(sumPoidsCols(&sum,i)>=t)
+				{
+					setElt(&flipped_positions,0,i,getElt(&flipped_positions,0,i)+1);
+				}
+		}
+	   printf("\nmatrice après  flipped_positionsest  [%d][%d] =\n", flipped_positions.nb_rows, flipped_positions.nb_columns);
+		printMatrix(&flipped_positions);
+		updateU_V(&u,&v,&flipped_positions);
+		printf("\nmatrice après  u  =\n");
+		printMatrix(&u);
+		printf("\nmatrice après  v  =\n");
+		printMatrix(&v);
+
+		Matrix transpose_flipped_pos = transpose(&flipped_positions);
+		printf("\nmatrice après  transpose de flipped_positions est  [%d][%d] =\n", transpose_flipped_pos.nb_rows, transpose_flipped_pos.nb_columns);
+		printMatrix(&transpose_flipped_pos);
+
+		Matrix S_H = subraction_Polynome(&syndrome,&H);
+		printf("\nmatrice S-H est  [%d][%d] =\n", S_H.nb_rows, S_H.nb_columns);
+		printMatrix(&S_H);
+// syndrome = syndrome −H × flipped_positions > ;
+
+		/*Matrix rot_h1 = rot(h1);
     printf("\nmatrice rot(h1) est  [%d][%d] =\n", rot_h1.nb_rows, rot_h1.nb_columns);
     printMatrix(&rot_h1);
 
