@@ -19,7 +19,7 @@
 		{
 			xy[i][j] = v[j%n][0];
 		}
-  return 
+  return
 }*/
 
 int ** allocation (int **temp,int lig,int col)
@@ -101,7 +101,7 @@ int **inversionDouble(int **matrice , float **augmentedmatrix ,int **matriceResu
     printf("\n");
     printf("\n");
     float temporary, r ;
-    int i, j, k, temp; 
+    int i, j, k, temp;
 
     for(i=0;i<dimension; i++)
         for(j=0; j< dimension; j++)
@@ -171,10 +171,10 @@ int **inversionDouble(int **matrice , float **augmentedmatrix ,int **matriceResu
                     {
                     	augmentedmatrix[i][k] = abs((int)(augmentedmatrix[i][k]/r)%2);
                     }
-                    
+
                 }
             }
-    }  
+    }
  /* Display augmented matrix */
     printf("\n La matrice augmentée obtenu après la methode de gauss-jordan : \n\n") ;
 
@@ -188,7 +188,7 @@ int **inversionDouble(int **matrice , float **augmentedmatrix ,int **matriceResu
     //int **matriceResult;
     //matriceResult = allocation(matriceResult,dimension,dimension);
     printf("\n\n\n La matrice inverse est : \n\n");
-    
+
     for(i=0; i<dimension; i++)
     {
         for(j=dimension; j<2*dimension; j++)
@@ -213,7 +213,7 @@ int **multiplication(int **matrice1 ,int  **matrice2 , int **matrice3 , int no ,
          	printf("%d\n", j);
           matrice3[i][j]=0;
           exit(0);
-          for (k=0; k< m; k++)			 			
+          for (k=0; k< m; k++)
                matrice3[i][j] += matrice1[i][k] * matrice2[k][j];
            matrice3[i][j] = abs(matrice3[i][j]%2);
          }
@@ -267,7 +267,7 @@ int ** generation_aleatoire(int we)
 		w = poidHamming(x,1,n);
     }
 
-    return x ; 
+    return x ;
 }
 
 
@@ -312,7 +312,7 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 				u_v[i][j] = v[0][j];
 			}
 		}
-	
+
 	//declaration de la matrice H comme dans l'algo
 	int **H ;
 	// allocation de H
@@ -352,8 +352,8 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 			H[i][j] = T_composante_H_1[j%n][0];
 		}
 	}
-		
-// calcul du syndrome 
+
+// calcul du syndrome
 	int **syndrome ;
 	syndrome = allocation(syndrome, 1 ,  n );
 
@@ -371,7 +371,7 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 
 	while((poidHamming(u, 1 , n ) != t || poidHamming(v , 1, n) != t) & poidHamming(syndrome,1,n) != 0 )
 	{
-		
+
 		sum = multiplication(syndrome,H,result,1,n,2*n);
 		for (int i = 0 ; i < n ; i ++)
 			flipped_positions[0][i] = 0;
@@ -380,7 +380,7 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 		{
 			if (sum[0][i]>= T )
 				{
-					// XOR de flipped_positions avec 1 
+					// XOR de flipped_positions avec 1
 					flipped_positions[0][i] = (flipped_positions[0][i] + 1)%2;
 
 				}
@@ -398,7 +398,7 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 
 		// multiplication de H et la Transposer de flipped_positions
 		int **Hflipped_positions = multiplication(H , T_flipped_positions , resu , n , 2*n , 1 );
-		
+
 		// Soustraction du syndrome et de Hflipped_positions
 		for (int j = 0 ; j < 2*n ; j ++)
 			syndrome[0][j] = syndrome[0][j] - Hflipped_positions[j][0];
@@ -407,7 +407,7 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 	//  Les parties qui viennent on été decoupé en plusieurs parties pour donner le resultat voulu par l'algorithme.
 	int ** T_u_v;
 
-	T_u_v = allocation(T_u_v , 2*n , 1); 
+	T_u_v = allocation(T_u_v , 2*n , 1);
 
 	T_u_v = transposer(u_v , T_u_v , 1 , 2*n);
 
@@ -426,7 +426,7 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 	// soustration entre S et la partie précédente
 	for (int j = 0 ; j < n ; j++ )
 		resume[0][j] = s[0][j] - multiply[j][0];
-	// a cette etape , on retourne le resultat.  
+	// a cette etape , on retourne le resultat.
 	if (resume != 0)
 	{
 		return NULL;
@@ -435,11 +435,11 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 	{
 		return u_v;
 	}
-	
+
 }
 
 /*int ** partage_h(int **ho, int **h1)
-{	
+{
 	printf("\n");
 
 	while(1)
@@ -455,7 +455,7 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 
 	}
 
-	
+
 
 	afficherMatriceXY(h1,1,n);
 	printf("matrice de h1 \n");
@@ -469,7 +469,7 @@ int **bitFlipping(int **ho,int **h1,int **s,int T,int t)
 	int **h = multiplication(matrice_h1,inverse_matrice_ho,result , n , n , n);
 
 	afficherMatrice(h,n);
-// quand il n'ya pas d"inversion , regénerer 
+// quand il n'ya pas d"inversion , regénerer
 	return h ;
 }*/
 
@@ -477,7 +477,7 @@ int **partage_c1(int **h)
 {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	int ** eo;
 	int ** e1 ;
 	int **res ;
@@ -485,21 +485,21 @@ int **partage_c1(int **h)
 	eo = allocation(eo, 1 , n);
 	e1 = allocation(e1,1,n);
 
-	// generation aléatoire de e0 et e1 
+	// generation aléatoire de e0 et e1
 	eo = generation_aleatoire(w_x);
 	e1 = generation_aleatoire(w_x);
 
 	//mettre e0 et e1 sous forme matricielle pour pouvoir faire la multiplication
 	int **matrice_eo = rot(eo);
 	int **matrice_e1 = rot(e1);
-	
+
 	int **he1 = multiplication(h , matrice_e1 , res , n , n ,n );
 
 	int ** c1;
 
-	// calcul de c1 
+	// calcul de c1
 	c1 = allocation(c1 ,n , n );
-	
+
 	for(int i = 0; i < n ; i++)
 		for(int j = 0; j < n ; j++)
 			c1[i][j] = matrice_eo[i][j] + he1[i][j];
@@ -521,7 +521,7 @@ int **chiffrement(int **m, int **eo, int **e1)
 	eo = generation_aleatoire(w_x);
 	e1 = generation_aleatoire(w_x);*/
 
-	int ** co;
+	/*int ** co;
 	co = allocation(co ,n , n );
 	Hash_eo_e1 = Hash(eo,e1);
 	for (int i = 0 ; i < n ; i++)
@@ -529,12 +529,12 @@ int **chiffrement(int **m, int **eo, int **e1)
 		co = (m[0][i] + Hash_eo_e1)%2;
 	}
 
-	return co;
+	return co;*/
 }
 
 int **dechiffrement(int **c)
 {
-	int ** m;
+/*	int ** m;
 	m = allocation(m ,n , n );
 	int **Hash_eo_e1 = Hash(eo,e1);
 	for(int i = 0 ; i < n ; i ++ )
@@ -542,7 +542,7 @@ int **dechiffrement(int **c)
 		m = (c[0][i] + Hash_eo_e1)%2;
 	}
 
-	return m;
+	return m;*/
 }
 
 int **getS(int **ho,int **c1)
@@ -557,7 +557,7 @@ int **getS(int **ho,int **c1)
 ///////////////////////////////////////////////////
 int  main(int argc, char const *argv[])
 {
-	clock_t start,end;
+	  clock_t start,end;
     double cpu_time_used;
     start=clock();
     srand(time(NULL));
@@ -581,7 +581,7 @@ int  main(int argc, char const *argv[])
 	int **matrice_h1 = allocation(matrice_h1,n,n);
 	h1 = allocation(h1,1,n);
 	h1 = generation_aleatoire(w_x);
-	
+
 	mat = allocationf(mat,n,2*n);
 	ho = allocation(ho,1,n);
 
@@ -590,7 +590,7 @@ int  main(int argc, char const *argv[])
 	printf("matrice de h1 \n");
 	while(1)
 	{
-		
+
 		ho = generation_aleatoire(w_x);
 		afficherMatriceXY(ho,1,n);
 		printf("matrice de ho \n");
@@ -637,9 +637,9 @@ int ** eoe1 = bitFlipping(ho,h1,S, t , w );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-	end=clock();
-    cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
-    printf("\t# Temps utilisé  pour l'éxécution est : %f #\n\n\n",cpu_time_used);    
-    
+end=clock();
+cpu_time_used=((double)(end-start))/CLOCKS_PER_SEC;
+printf("\t# Temps utilisé  pour l'éxécution est : %f #\n\n\n",cpu_time_used);
+
 	return 0;
 }

@@ -45,9 +45,13 @@ void echanger_ligne(Matrix *m,int ligne1, int ligne2);
 Matrix matrice_inverse_gauss(Matrix *);
 Matrix matrice_inverse_cofacteur(Matrix *);
 Matrix Permutation_cols(Matrix *m);
-bool monPivot(Matrix *m);
+Matrix pivotGaus(Matrix *m);
 Matrix startMatrix(int nb_rows,int nb_columns);
-Matrix faire_U(int size_U,int n,Matrix *m);
+Matrix faire_U(int size_U,Matrix *h);
 int poidHamming(Matrix *m);
 Matrix Permutation_alea(int n);
+bool verify_tab(int *tab,int val,int size_U);
+Matrix MatrixH(int nb_rows,int nb_columns);
+int fillMatrixH(int nb_columns);
+Matrix MatrixErreur(int nb_rows,int nb_columns,int t);
 #endif

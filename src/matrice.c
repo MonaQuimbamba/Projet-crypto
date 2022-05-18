@@ -627,15 +627,58 @@ Matrix startMatrix(int nb_rows,int nb_columns)
     {
         for(j=0; j<nb_columns; j++)
         {
-          elt=rand() & 1;
+          elt=rand() % 2;
+          setElt(&m,j,i, elt);
+        }
+    }
+    return m;
+}
+
+int fillMatrixH(int nb_columns){
+
+  return 0;
+}
+
+Matrix MatrixH(int nb_rows,int nb_columns)
+{
+    Matrix m;
+    m = newMatrix(nb_rows, nb_columns);
+    int i,j;
+    Elt elt;
+    for(i=0; i<nb_rows; i++)
+    {
+        int num = rand() %(nb_columns - 0 + 1) + 0;
+        for(j=0; j<nb_columns; j++)
+        {
+          if (j==num || i==0) elt=1;
+          else elt=fillMatrixH(nb_columns);
           setElt(&m,i,j, elt);
         }
     }
     return m;
 }
 
+Matrix MatrixErreur(int nb_rows,int nb_columns,int t)
+{
+    Matrix m;
+    m = newMatrix(nb_rows, nb_columns);
+    int i,j;
+    Elt elt;
+    for(i=0; i<nb_rows; i++)
+    {
 
-bool monPivot(Matrix *m)
+        for(j=0; j<nb_columns; j++)
+        {
+          if (t>0) elt=1;
+          else elt=fillMatrixH(nb_columns);
+          setElt(&m,i,j, elt);
+          t--;
+        }
+    }
+    return m;
+}
+
+Matrix pivotGaus(Matrix *m)
 {
 
   int augmentedmatrix[maximum][2*maximum];
@@ -644,6 +687,7 @@ bool monPivot(Matrix *m)
   dimension=m->nb_rows;
 
   Matrix inverse = startMatrix(dimension,dimension);
+  inverse.valide=true;
   // remplir la matrix
   for(i=0; i<dimension; i++)
    for(j=0; j<dimension; j++)
@@ -669,7 +713,8 @@ bool monPivot(Matrix *m)
    if(abs(augmentedmatrix[temp][j])<minvalue)
               {
                 // printf("\n Elements are too small to deal with !!!");
-                 return false;
+                 inverse.valide=false;
+                 return inverse;
               }
   // swapping row which has maximum jth column element
    if(temp!=j)
@@ -712,27 +757,58 @@ bool monPivot(Matrix *m)
 
   }
 
-  return true;
+  return inverse;
 
 }
 
-
-
-Matrix faire_U(int size_U,int n,Matrix *m)
+bool verify_tab(int *tab,int val,int size_U)
 {
+   for(int i =0 ; i < size_U ;i++)
+   {
+     if(tab[i]==val) return false;
+   }
+   return true;
+}
+
+Matrix faire_U(int size_U,Matrix *h)
+{
+    int i,j;
    int index[size_U];
   for(int i=0 ; i < size_U ; i++) index[i]=0;
-  srandom(time(NULL));
-  for (int i = 0; i < size_U; i++) index[i]=rand() % n;
 
+  i = 0;
+  while(i < size_U)
+  {
+
+      srand(time(NULL));
+     int num = rand() %(size_U - 0 + 1) + 0;
+    if(i==0)
+    {
+      index[i]=num;
+      i++;
+    }
+
+    else{
+
+     if(verify_tab(index,num,size_U)){
+        index[i]=num;
+        i++;
+      }
+    }
+
+  }
+
+  //for(int i=0 ; i < size_U ; i++) printf("%d\n", index[i]);
+  //printf("\n");
+  // remplir Mat U avec les bonnes collones
   Matrix mU = startMatrix(size_U,size_U);
-  int i,j;
-  for(i=0; i<m->nb_rows; i++)
+
+  for(i=0; i<h->nb_rows; i++)
   {
     int val=0;
     for(j=0; j<size_U; j++)
     {
-      setElt(&mU,i,val,getElt(m,i,index[j]));
+      setElt(&mU,i,val,getElt(h,i,index[j]));
       val++;
     }
   }
