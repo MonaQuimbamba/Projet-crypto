@@ -1,5 +1,5 @@
 #include "include/matrice.h"
-
+#include "LATEST/libsodium-stable/src/libsodium/include/sodium.h"
 
 /**
  * \fn Matrix newMatrix(int nb_rows, int nb_columns)
@@ -174,7 +174,7 @@ Matrix mult_scalar(Elt elt, Matrix *m)
     int i,j;
     for (i=0; i<m2.nb_rows; i++)
 	for (j=0; j<m2.nb_columns; j++)
-	    setElt(&m2,i,j,(getElt(m,i,j)*elt)%2);
+	    setElt(&m2,i,j,(abs(getElt(m,i,j)*elt)%2));
     return m2;
 }
 
@@ -239,26 +239,6 @@ Matrix MatrixH(int nb_rows,int nb_columns)
           if (j==num || i==0) elt=1;
           else elt=fillMatrixH(nb_columns);
           setElt(&m,i,j, elt);
-        }
-    }
-    return m;
-}
-
-Matrix MatrixErreur(int nb_rows,int nb_columns,int t)
-{
-    Matrix m;
-    m = newMatrix(nb_rows, nb_columns);
-    int i,j;
-    Elt elt;
-    for(i=0; i<nb_rows; i++)
-    {
-
-        for(j=0; j<nb_columns; j++)
-        {
-          if (t>0) elt=1;
-          else elt=fillMatrixH(nb_columns);
-          setElt(&m,i,j, elt);
-          t--;
         }
     }
     return m;
@@ -358,44 +338,30 @@ bool verify_tab(int *tab,int val,int size_U)
 
 Matrix faire_U(int size_U,Matrix *h)
 {
-    int i,j;
-   int index[size_U];
-  for(int i=0 ; i < size_U ; i++) index[i]=0;
-
-  i = 0;
-  while(i < size_U)
-  {
-
-      srand(time(NULL));
-     int num = rand() %(size_U - 0 + 1) + 0;
-    if(i==0)
-    {
-      index[i]=num;
-      i++;
-    }
-
-    else{
-
-     if(verify_tab(index,num,size_U)){
-        index[i]=num;
-        i++;
-      }
-    }
-
+  int i,j;
+  int n =h->nb_columns;
+  int index[n];
+  for( i=0 ; i < n ; i++) index[i]=0;
+  uint32_t elt;
+   i =0;
+  while(i < size_U){
+     elt = randombytes_uniform(n);
+     if( index[elt]!=1){
+       index[elt] = 1;
+       i++;
+     }
   }
 
-  //for(int i=0 ; i < size_U ; i++) printf("%d\n", index[i]);
-  //printf("\n");
   // remplir Mat U avec les bonnes collones
   Matrix mU = startMatrix(size_U,size_U);
-
   for(i=0; i<h->nb_rows; i++)
   {
-    int val=0;
+
     for(j=0; j<size_U; j++)
     {
-      setElt(&mU,i,val,getElt(h,i,index[j]));
-      val++;
+      if(index[j]==1)
+      setElt(&mU,i,j,getElt(h,i,j));
+
     }
   }
 

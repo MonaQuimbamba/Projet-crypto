@@ -39,7 +39,6 @@ int poidHamming(Matrix *m);
 bool verify_tab(int *tab,int val,int size_U);
 Matrix MatrixH(int nb_rows,int nb_columns);
 int fillMatrixH(int nb_columns);
-Matrix MatrixErreur(int nb_rows,int nb_columns,int t);
 Matrix concatenationMatrix(Matrix *u,Matrix *v);
 Matrix copier_matrice(Matrix *m);
 

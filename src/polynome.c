@@ -1,6 +1,6 @@
 #include "include/polynome.h"
 
-
+#include "LATEST/libsodium-stable/src/libsodium/include/sodium.h"
 void rotate(int arr[], int n)
 {
 int x = arr[n-1], i;
@@ -35,12 +35,14 @@ Matrix subraction_Polynome(Matrix *u,Matrix *v)
 
 	Matrix res = newMatrix(v->nb_rows,1);
 
+  //printf(" matU \n");
+  Matrix t = transpose(u);
+  //printMatrix(&t);
+//  printf(" matV \n");
+//  printMatrix(v);
 	for(int i =0 ; i< res.nb_rows; i++)
-	{
-		if( i < u->nb_rows ) setElt(&res,0,i, abs(getElt(v,0,i) - getElt(u,0,i))%2);
-		else setElt(&res,0,i,getElt(v,0,i));
-	}
-	//for(int i=0 ;  i< res.nb_columns ; i++) printf(" u [%d] : \n", getElt(&res,0,i));
+		setElt(&res,0,i, abs(getElt(v,0,i) - getElt(&t,0,i))%2);
+
  return res;
 }
 
@@ -49,10 +51,14 @@ Matrix createPolynome(int degre,int w)
 {
     Matrix m;
     m = newMatrix(degre, 1);
-    Elt elt;
-    for(int j=0; j<degre; j++){
-      elt = rand() % (degre -3 + 1) +3 ;
-        setElt(&m,0,j, elt);
+    uint32_t elt;
+    int i =0;
+    while(i < w){
+       elt = randombytes_uniform(degre);
+       if(getElt(&m,0,elt)!=1){
+         setElt(&m,0,elt, 1);
+         i++;
+       }
     }
 
     return m;
@@ -62,12 +68,14 @@ Matrix createPolynome(int degre,int w)
 
 Matrix concatenationPoly(Matrix *u,Matrix *v)
 {
-   Matrix concat = newMatrix(1,u->nb_columns*2);
+   Matrix concat = newMatrix(u->nb_rows*2,1);
    int k;
-   for(int i= 0 ; i < u->nb_rows;i++)
+   printf(" mat in lig %d et col %d \n",u->nb_rows,u->nb_columns );
+   printf("lig %d et col %d \n",concat.nb_rows , concat.nb_columns);
+   for(int i= 0 ; i < u->nb_columns;i++)
    {
       k=0;
-     for(int j = 0 ; j < u->nb_columns*2;j++)
+     for(int j = 0 ; j < u->nb_rows*2;j++)
      {
        if(j <u->nb_columns) setElt(&concat,i,j,getElt(u,i,j));
        else
