@@ -414,28 +414,22 @@ int poidHamming(Matrix *m)
     return poids;
 }
 
-Matrix createPolynome(int nb_rows,int nb_columns,int w)
+/**
+ * \brief fonction qui copie une matrice
+ * \return une copie de la matrice
+ */
+Matrix copier_matrice(Matrix *m)
 {
-    Matrix m;
-    m = newMatrix(nb_rows, nb_columns);
+    Matrix new;
+    new.mat = (Elt *) malloc(sizeof(Elt)*m->nb_rows*m->nb_columns);
+    new.nb_rows=m->nb_rows;
+    new.nb_columns=m->nb_columns;
+    new.valide=m->valide;
     int i,j;
-    Elt elt;
-    for(i=0; i<nb_rows; i++)
-    {
-        int lig = rand() % (nb_rows -3 + 1) +3 ;
-        for(j=0; j<nb_columns; j++)
-        {
-          int col = rand() % (nb_rows -3 + 1) +3;
-          if (lig+col%2!=0 & w>0){
-            elt=1;
-              w--;
-          }
-          else elt=fillMatrixH(nb_columns);
-          setElt(&m,i,j, elt);
-
-        }
-    }
-    return m;
+    for(i=0; i<new.nb_rows; i++)
+        for(j=0; j<new.nb_columns; j++)
+            setElt(&new,i,j,getElt(m,i,j));
+    return new;
 }
 
 Matrix concatenationMatrix(Matrix *u,Matrix *v)

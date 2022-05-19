@@ -7,36 +7,11 @@
 #include <string.h>
 #include <sys/random.h>
 #include "include/matrice.h"
+#include "include/polynome.h"
 
 #define LIMITE 20
 
-void rotate(int arr[], int n)
-{
-int x = arr[n-1], i;
-for (i = n-1; i > 0; i--)
-	arr[i] = arr[i-1];
-arr[0] = x;
-}
 
-
-Matrix rot(Matrix *m)
-{
-	Matrix rot=newMatrix(m->nb_rows,m->nb_rows);
-	int k = 0;
-  Elt elt ;
-  int tab[m->nb_rows];
-  for(int i=0 ; i<m->nb_rows;i++) tab[i]=getElt(m,0,i);
-  for(int i = 0 ; i < rot.nb_rows; i++)
-  {
-    for(int j = 0 ; j < rot.nb_columns ;j++)
-    {
-       elt = tab[j];
-       setElt(&rot,i,j,elt);
-    }
-    rotate(tab,m->nb_rows);
-  }
-	return rot;
-}
 
 int sumPoidsCols(Matrix *m,int nbcol)
 {
@@ -65,19 +40,7 @@ void updateU_V(Matrix *u,Matrix *v, Matrix *m)
 
 }
 
-Matrix subraction_Polynome(Matrix *u,Matrix *v)
-{
 
-	Matrix res = newMatrix(1,v->nb_columns);
-
-	for(int i =0 ; i< res.nb_columns; i++)
-	{
-		if( i < u->nb_columns ) setElt(&res,0,i, abs(getElt(v,0,i) - getElt(u,0,i))%2);
-		else setElt(&res,0,i,getElt(v,0,i));
-	}
-	//for(int i=0 ;  i< res.nb_columns ; i++) printf(" u [%d] : \n", getElt(&res,0,i));
- return res;
-}
 
 void bitFlipping(Matrix *ho, Matrix *h1,Matrix *s,int t,int w)
 {
@@ -90,24 +53,30 @@ void bitFlipping(Matrix *ho, Matrix *h1,Matrix *s,int t,int w)
     printMatrix(&u_v);
 
     Matrix rot_h1 = rot(h1);
-    printf("\nmatrice rot(h1) est  [%d][%d] =\n", rot_h1.nb_rows, rot_h1.nb_columns);
-    printMatrix(&rot_h1);
+    //printf("\nmatrice rot(h1) est  [%d][%d] =\n", rot_h1.nb_rows, rot_h1.nb_columns);
+    //printMatrix(&rot_h1);
     Matrix h_neg = mult_scalar(-1,ho);
     Matrix rot_ho_neg = rot(&h_neg);
-    printf("\nmatrice rot(-ho) est  [%d][%d] =\n", rot_ho_neg.nb_rows, rot_ho_neg.nb_columns);
-    printMatrix(&rot_ho_neg);
+    //printf("\nmatrice rot(-ho) est  [%d][%d] =\n", rot_ho_neg.nb_rows, rot_ho_neg.nb_columns);
+    //printMatrix(&rot_ho_neg);
 
     Matrix trans_rot_ho=transpose(&rot_ho_neg);
     Matrix trans_rot_h1=transpose(&rot_h1);
 
-    printf("\nmatrice trnas_rot_h1 est  [%d][%d] =\n", trans_rot_h1.nb_rows, trans_rot_h1.nb_columns);
-    printMatrix(&trans_rot_h1);
+    //printf("\nmatrice trnas_rot_ho est  [%d][%d] =\n", trans_rot_ho.nb_rows, trans_rot_ho.nb_columns);
+    //printMatrix(&trans_rot_ho);
+
+		//printf("\nmatrice trnas_rot_h1 est  [%d][%d] =\n", trans_rot_h1.nb_rows, trans_rot_h1.nb_columns);
+    //printMatrix(&trans_rot_h1);
 
     Matrix H = concatenationMatrix(&trans_rot_ho,&trans_rot_h1);
+		//H = transpose(&H);
+
     printf("\nmatrice H est  [%d][%d] =\n", H.nb_rows, H.nb_columns);
     printMatrix(&H);
 
-     Matrix syndrome=rot(s);
+    Matrix syndrome= rot(s) ; //copier_matrice(s);
+		//syndrome = transpose(&syndrome);
 
     printf("\nmatrice syndrome est  [%d][%d] =\n", syndrome.nb_rows, syndrome.nb_columns);
     printMatrix(&syndrome);
@@ -117,6 +86,8 @@ void bitFlipping(Matrix *ho, Matrix *h1,Matrix *s,int t,int w)
     printMatrix(&flipped_positions);
 
     Matrix sum = multiplication(&syndrome,&H);
+		//sum= transpose(&sum);
+		//sum = rot(&sum);
     printf("\nmatrice sum est  [%d][%d] =\n", sum.nb_rows, sum.nb_columns);
     printMatrix(&sum);
 
@@ -138,9 +109,32 @@ void bitFlipping(Matrix *ho, Matrix *h1,Matrix *s,int t,int w)
 		printf("\nmatrice après  transpose de flipped_positions est  [%d][%d] =\n", transpose_flipped_pos.nb_rows, transpose_flipped_pos.nb_columns);
 		printMatrix(&transpose_flipped_pos);
 
-		Matrix S_H = subraction_Polynome(&syndrome,&H);
-		printf("\nmatrice S-H est  [%d][%d] =\n", S_H.nb_rows, S_H.nb_columns);
-		printMatrix(&S_H);
+		Matrix HFptrans = multiplication(&H,&transpose_flipped_pos);
+		printf("\nmatrice H*Fp est  [%d][%d] =\n", HFptrans.nb_rows, HFptrans.nb_columns);
+		printMatrix(&HFptrans);
+
+
+		Matrix sub = getPolyFromCycleMatrix(&syndrome);
+		printf("\nmatrice  poly syndrome et hftrans est  [%d][%d] =\n", sub.nb_rows, sub.nb_columns);
+		printMatrix(&sub);
+		Matrix res =  subraction_Polynome(&H,&HFptrans);
+		printf("\nmatrice sub poly syndrome et hftrans est  [%d][%d] =\n", res.nb_rows, res.nb_columns);
+		printMatrix(&res);
+
+		/*Matrix trans_SH = transpose(&S_H);
+		Matrix rot_SH = rot(&trans_SH);
+
+		printf("\nmatrice rot(S-H) est  [%d][%d] =\n", rot_SH.nb_rows, rot_SH.nb_columns);
+		printMatrix(&rot_SH);
+		syndrome = multiplication(&rot_SH,&transpose_flipped_pos);
+		printf("\nmatrice new syndrome est  [%d][%d] =\n", syndrome.nb_rows, syndrome.nb_columns);
+		printMatrix(&syndrome);
+
+
+		sum = multiplication(&H,&syndrome);
+		printf("\nmatrice new sum est  [%d][%d] =\n", sum.nb_rows, sum.nb_columns);
+		printMatrix(&sum);
+
 // syndrome = syndrome −H × flipped_positions > ;
 
 		/*Matrix rot_h1 = rot(h1);
@@ -163,12 +157,12 @@ int main(int argc, char const *argv[]) {
 
 
   // Alice
-  Matrix ho = createPolynome(n,1,t);
+  Matrix ho = createPolynome(n,t);
   setElt(&ho,0,0,1);
   setElt(&ho,0,1,0);
   setElt(&ho,0,2,1);
   setElt(&ho,0,3,1);
-  Matrix h1 = createPolynome(n,1,t);
+  Matrix h1 = createPolynome(n,t);
   setElt(&h1,0,0,1);
   setElt(&h1,0,1,1);
   setElt(&h1,0,2,1);
@@ -187,8 +181,8 @@ int main(int argc, char const *argv[]) {
   //if(inverse_ho.valide==true)   printMatrix(&inverse_ho);
 
   Matrix h = multiplication(&inverse_ho,&h1);
-  printf("\nmatrice h est  [%d][%d] =\n", h.nb_rows, h.nb_columns);
-  printMatrix(&h);
+  //printf("\nmatrice h est  [%d][%d] =\n", h.nb_rows, h.nb_columns);
+  //printMatrix(&h);
 
   Matrix H = rot(&h);
   //printf("\nmatrice cyclique de h est  [%d][%d] =\n", H.nb_rows, H.nb_columns);
