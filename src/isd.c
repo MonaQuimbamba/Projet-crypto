@@ -45,9 +45,9 @@ n=1000 k=500 t=10
 */
 
 int main(int argc, char const *argv[]) {
-  int n=1000;
-  int k=500;
-  int t=10;
+  int n=10;
+  int k=5;
+  int t=3;
   Matrix h = MatrixH(n-k,n);
   printf("\nmatrice H est  [%d][%d] =\n", h.nb_rows, h.nb_columns);
   printMatrix(&h);

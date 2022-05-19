@@ -8,6 +8,7 @@
 #include <sys/random.h>
 #include "include/matrice.h"
 #include "include/polynome.h"
+#include "include/md5.h"
 
 #include "LATEST/libsodium-stable/src/libsodium/include/sodium.h"
 
@@ -119,6 +120,42 @@ Matrix bitFlipping(Matrix *ho, Matrix *h1,Matrix *s,int weight_h)
 }
 
 
+int chiffrement(int m , Matrix *eo,Matrix *e1)
+{
+
+	int res=0;
+	int n =eo->nb_rows;
+	int k=0;
+	unsigned char ma_chaine[n*2];
+	for(int j =0 ; j < 2 ; j++)
+	{
+		k=0;
+		for(int i=0 ; i < n*2;i++){
+
+			if( i < n){
+				ma_chaine[i]+= getElt(eo,0,i) ;
+			}else{
+				ma_chaine[i]+= getElt(e1,0,k);
+				k++;
+			}
+		}
+	}
+
+
+		unsigned char mon_hash[MD5_HASHBYTES];
+		calcul_md5(ma_chaine,n*2,mon_hash);
+		printf("le hash de %s est ", ma_chaine);
+		for(int i=0; i < MD5_HASHBYTES;i++)
+		printf("%2.2x ", mon_hash[i]);
+		printf("\n");
+
+		for(int i=0 ; i < MD5_HASHBYTES;i++) res=res^mon_hash[i];
+
+		printf(" le message est %d\n",res);
+		return res;
+
+}
+
 /*
 poids de x et y : w=39,
 longueur de x et y : n= 4813
@@ -127,9 +164,9 @@ poids total de l'erreur e : 78,
 */
 
 int main(int argc, char const *argv[]) {
-  int n=7;
-  int weight_h=3;
-  int weight_e=4;
+  int n=481;
+  int weight_h=39;
+  int weight_e=78;
 	bool goIfnotInverse=true;
 	Matrix ho ;
 	Matrix h1;
@@ -142,59 +179,38 @@ int main(int argc, char const *argv[]) {
 	Matrix c1;
 	Matrix c;
 	Matrix s;
+	int m=25;
+
 
 while(goIfnotInverse){
 
 	ho= createPolynome(n,weight_h);
 	h1 = createPolynome(n,weight_h);
-	//printf("\nmatrice ho est  [%d][%d] =\n", ho.nb_rows, ho.nb_columns);
-	//printMatrix(&ho);
-	//printf("\nmatrice h1 est  [%d][%d] =\n", h1.nb_rows, h1.nb_columns);
-	//printMatrix(&h1);
 	Ho = rot(&ho);
-	//printf("\nmatrice cyclique de ho est  [%d][%d] =\n", Ho.nb_rows, Ho.nb_columns);
-	//printMatrix(&Ho);
 	inverse_ho = pivotGaus(&Ho);
 	if(inverse_ho.valide==true){
+
 		goIfnotInverse=false;
-
 		h = multiplication(&inverse_ho,&h1);
-		//printf("\nmatrice h est  [%d][%d] =\n", h.nb_rows, h.nb_columns);
-		//printMatrix(&h);
 		H = rot(&h);
-
 		// Bob
 		eo = createPolynome(n,weight_e);
 		e1 = createPolynome(n,weight_e);
-
-		//printf("\nmatrice eo est  [%d][%d] =\n", eo.nb_rows, eo.nb_columns);
-		//printMatrix(&eo);
-		//printf("\nmatrice e1 est  [%d][%d] =\n", e1.nb_rows, e1.nb_columns);
-		//printMatrix(&e1);
 		c1 = multiplication(&H,&e1);
-		//printf("\nmatrice c1 est  [%d][%d] =\n", c1.nb_rows, c1.nb_columns);
-		//printMatrix(&c1);
-
 		c = addition(&eo,&c1);
-		//printf("\nmatrice c est  [%d][%d] =\n", c.nb_rows, c.nb_columns);
-		//printMatrix(&c);
 		s = multiplication(&Ho,&c);
+
+
 		//printf("\nmatrice s est  [%d][%d] =\n", s.nb_rows, s.nb_columns);
 		//printMatrix(&s);
-		Matrix eo_e1 = bitFlipping(&ho,&h1,&s,weight_h);
+	//	Matrix eo_e1 = bitFlipping(&ho,&h1,&s,weight_h);
 
-		if(eo_e1.valide==true)   printMatrix(&eo_e1);
+		//if(eo_e1.valide==true)   printMatrix(&eo_e1);
 
 	}
 
 
 }
-
-
-
-
-
-
 
   deleteM(&eo);
   deleteM(&e1);
