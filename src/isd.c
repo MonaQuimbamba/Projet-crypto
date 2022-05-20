@@ -11,30 +11,39 @@
 #include "sodium.h"
 
 
-#define LIMITE 20
 
-Matrix Prange_ISD(int n,int k, Matrix *h, Matrix *s,int t)
+Matrix Prange_ISD(int n,int k, Matrix *h, Matrix *s,Matrix *e,int w_erreur)
 {
 
   int iter=50;
-  Matrix e;
-  e.valide=false;
+  Matrix e_res;
+  e_res.valide=false;
   int i=0;
- while( i < iter )
+   while( i < iter )
   {
-       Matrix u =  faire_U(n-k,h);
+
+       Matrix u =  faire_U(n-k,h,e,w_erreur);
+       printf("\nla matrice U est  [%d][%d] =\n", u.nb_rows, u.nb_columns);
+       //printMatrix(&u);
+       //printf(" avant passed \n");
        Matrix inverseU = pivotGaus(&u);
+       //printf("  passed \n");
       if(inverseU.valide)
        {
-         e = multiplication(&inverseU,s);
-         if(poidHamming(&e)==t){
-           e.valide=true;
-           return e;
+
+         printf("\nla matrice inverse de U est  [%d][%d] =\n", inverseU.nb_rows, inverseU.nb_columns);
+         //printMatrix(&inverseU);
+        //printf(" avant passed \n");
+         e_res = multiplication(&inverseU,s);
+         //printf(" passed \n");
+        if(poidHamming(&e_res)==w_erreur){
+           e_res.valide=true;
+           return e_res;
          }
        }
       i++;
   }
-  return e;
+  return e_res;
 }
 
 
@@ -45,29 +54,30 @@ n=1000 k=500 t=10
 */
 
 int main(int argc, char const *argv[]) {
-  int n=10;
-  int k=5;
-  int t=3;
+  int n=1000;
+  int k=500;
+  int w_erreur=10;
   Matrix h = MatrixH(n-k,n);
-  printf("\nmatrice H est  [%d][%d] =\n", h.nb_rows, h.nb_columns);
-  printMatrix(&h);
+  //printf("\nmatrice H est  [%d][%d] =\n", h.nb_rows, h.nb_columns);
+  //printMatrix(&h);
 
-  Matrix e = createPolynome(n,t);
+  Matrix e = createPolynome(n,w_erreur);
   printf("\nle vecteur e est  [%d][%d] =\n", e.nb_rows, e.nb_columns);
-  printMatrix(&e);
-
+  Matrix  e_trans = transpose(&e);
+  //printMatrix(&e_trans);
   Matrix s = multiplication(&h,&e);
-  printf("\nla matrice S=H*e^t est  [%d][%d] =\n", s.nb_rows, s.nb_columns);
-  printMatrix(&s);
+  printf("\nla matrice s=H*e^t est  [%d][%d] =\n", s.nb_rows, s.nb_columns);
+  //printMatrix(&s);
 
-  Matrix ee = Prange_ISD(n,k,&h,&s,t);
- if(ee.valide){
+  Matrix ee = Prange_ISD(n,k,&h,&s,&e,w_erreur);
+  if(ee.valide){
     printf("\nla matrice e après le prange est  [%d][%d] =\n", ee.nb_rows, ee.nb_columns);
     printMatrix(&ee);
+    deleteM(&ee);
   }
   deleteM(&h);
   deleteM(&s);
   deleteM(&e);
-  deleteM(&ee);
+
   return 0;
 }

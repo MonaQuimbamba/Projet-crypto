@@ -230,14 +230,13 @@ Matrix MatrixH(int nb_rows,int nb_columns)
     Matrix m;
     m = newMatrix(nb_rows, nb_columns);
     int i,j;
-    Elt elt;
+     uint32_t elt;
     for(i=0; i<nb_rows; i++)
     {
-        int num = rand() %(nb_columns - 0 + 1) + 0;
+
         for(j=0; j<nb_columns; j++)
         {
-          if (j==num || i==0) elt=1;
-          else elt=fillMatrixH(nb_columns);
+          elt = randombytes_uniform(2);
           setElt(&m,i,j, elt);
         }
     }
@@ -247,6 +246,9 @@ Matrix MatrixH(int nb_rows,int nb_columns)
 Matrix pivotGaus(Matrix *m)
 {
 
+  //int augmentedmatrix[maximum][2*maximum];
+  //int *augmentedmatrix = (int *)malloc(maximum * maximum*2 * sizeof(int));
+
   int augmentedmatrix[maximum][2*maximum];
   int temporary, r ;
   int i, j, k, dimension, temp;
@@ -254,27 +256,33 @@ Matrix pivotGaus(Matrix *m)
 
   Matrix inverse = startMatrix(dimension,dimension);
   inverse.valide=true;
-  // remplir la matrix
-  for(i=0; i<dimension; i++)
-   for(j=0; j<dimension; j++)
-             augmentedmatrix[i][j]=getElt(m,i,j);
+  for(i=0; i<dimension; i++){
+    for(j=0; j<dimension; j++){
+      augmentedmatrix[i][j]=getElt(m,i,j);
+    }
+  }
+  for(i=0;i<dimension; i++){
+    for(j=dimension; j<2*dimension; j++){
+      if(i==j%dimension){
+           augmentedmatrix[i][j]=1;
+      }
+      else{
+         augmentedmatrix[i][j]=0;
+      }
+    }
+  }
 
-  /// faire l'identite
-  for(i=0;i<dimension; i++)
-   for(j=dimension; j<2*dimension; j++)
-       if(i==j%dimension)
-          augmentedmatrix[i][j]=1;
-       else
-          augmentedmatrix[i][j]=0;
 
   // using gauss-jordan elimination
   for(j=0; j<dimension; j++)
   {
-   temp=j;
-  // finding maximum jth column element in last (dimension-j) rows
-   for(i=j+1; i<dimension; i++)
- if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])
-                         temp=i;
+    temp=j;
+   for(i=j+1; i<dimension; i++){
+      if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])temp=i;
+   }
+
+
+
 
    if(abs(augmentedmatrix[temp][j])<minvalue)
               {
@@ -292,22 +300,18 @@ Matrix pivotGaus(Matrix *m)
              }
  // performing row operations to form required identity matrix out of the input matrix
    for(i=0; i<dimension; i++)
-             if(i!=j)
-             {
+             if(i!=j){
              r=augmentedmatrix[i][j];
-             for(k=0; k<2*dimension; k++)
-             {
+             for(k=0; k<2*dimension; k++){
 
                augmentedmatrix[i][k]= abs((int) (augmentedmatrix[i][k] - (augmentedmatrix[j][k]/augmentedmatrix[j][j])*r) % 2);
 
              }
 
              }
-             else
-             {
+             else{
              r=augmentedmatrix[i][j];
-             for(k=0; k<2*dimension; k++)
-               augmentedmatrix[i][k]/=r ;
+             for(k=0; k<2*dimension; k++) augmentedmatrix[i][k]/=r ;
              }
 
   }
@@ -324,27 +328,25 @@ Matrix pivotGaus(Matrix *m)
   }
 
   return inverse;
-
 }
 
-bool verify_tab(int *tab,int val,int size_U)
-{
-   for(int i =0 ; i < size_U ;i++)
-   {
-     if(tab[i]==val) return false;
-   }
-   return true;
-}
 
-Matrix faire_U(int size_U,Matrix *h)
+
+Matrix faire_U(int size_U,Matrix *h,Matrix *e,int w_erreur)
 {
   int i,j;
   int n =h->nb_columns;
-  int index[n];
-  for( i=0 ; i < n ; i++) index[i]=0;
+  int *index=  (int*) malloc(n * sizeof(int));
+  int w_matU=0;
+// ajouter les conditions pour satisfaire rapport entre les '1' de x et T
+  for( i=0 ; i < n ; i++)  index[i] = getElt(e,0,i)==1 ? 1 :0;
+  w_matU=size_U - w_erreur;
+
+  //for(i=0; i < n ; i++) printf(" avant [%d]\n",index[i]);
+//  printf(" poids manquent %d\n",w_matU);
   uint32_t elt;
    i =0;
-  while(i < size_U){
+  while(i < w_matU){
      elt = randombytes_uniform(n);
      if( index[elt]!=1){
        index[elt] = 1;
@@ -352,19 +354,30 @@ Matrix faire_U(int size_U,Matrix *h)
      }
   }
 
-  // remplir Mat U avec les bonnes collones
-  Matrix mU = startMatrix(size_U,size_U);
-  for(i=0; i<h->nb_rows; i++)
+  int *col_index = (int*) malloc(size_U*sizeof(int));//[];
+  int id=0;
+  for(i=0; i < n ; i++)
   {
-
-    for(j=0; j<size_U; j++)
-    {
-      if(index[j]==1)
-      setElt(&mU,i,j,getElt(h,i,j));
-
-    }
+        if(index[i]==1){
+         col_index[id]=i;
+         id++;
+       }
   }
 
+
+  //for(i=0; i < n ; i++) printf(" tab [%d]\n",index[i]);
+  //printf("\n=====\n");
+  //for(i=0; i < size_U ; i++) printf(" index [%d]\n",col_index[i]);
+  // remplir Mat U avec les bonnes collones
+  Matrix mU = newMatrix(size_U,size_U);
+
+  for(i=0; i<size_U; i++)
+    for(j=0; j<h->nb_rows; j++)
+    setElt(&mU,j,i,getElt(h,j,col_index[i]));
+
+
+  free(index);
+  free(col_index);
   return mU;
 
 }
