@@ -243,6 +243,10 @@ Matrix MatrixH(int nb_rows,int nb_columns)
     return m;
 }
 
+/**
+ * \brief fonction qui fait l'inversion d'une matrice , par le pivot de gauss
+ * \return ula matrice inverse 
+ */
 Matrix pivotGaus(Matrix *m)
 {
 
@@ -382,6 +386,10 @@ Matrix faire_U(int size_U,Matrix *h,Matrix *e,int w_erreur)
 
 }
 
+/**
+ * \brief fonction qui calcule la distance de Hammmings
+ * \return la distance de Hammming d'une matrice
+ */
 int poidHamming(Matrix *m)
 {
     int poids=0;
@@ -410,7 +418,10 @@ Matrix copier_matrice(Matrix *m)
             setElt(&new,i,j,getElt(m,i,j));
     return new;
 }
-
+/**
+ * \brief fonction qui permet de faire la concatenation de deux  matrice
+ * \return la  matrice concatené
+ */
 Matrix concatenationMatrix(Matrix *u,Matrix *v)
 {
    Matrix concat = newMatrix(u->nb_rows,u->nb_columns*2);

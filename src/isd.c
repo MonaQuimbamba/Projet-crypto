@@ -30,7 +30,6 @@ Matrix Prange_ISD(int n,int k, Matrix *h, Matrix *s,Matrix *e,int w_erreur)
        //printf("  passed \n");
       if(inverseU.valide)
        {
-
          printf("\nla matrice inverse de U est  [%d][%d] =\n", inverseU.nb_rows, inverseU.nb_columns);
          //printMatrix(&inverseU);
         //printf(" avant passed \n");
@@ -63,8 +62,6 @@ int main(int argc, char const *argv[]) {
 
   Matrix e = createPolynome(n,w_erreur);
   printf("\nle vecteur e est  [%d][%d] =\n", e.nb_rows, e.nb_columns);
-  Matrix  e_trans = transpose(&e);
-  //printMatrix(&e_trans);
   Matrix s = multiplication(&h,&e);
   printf("\nla matrice s=H*e^t est  [%d][%d] =\n", s.nb_rows, s.nb_columns);
   //printMatrix(&s);
