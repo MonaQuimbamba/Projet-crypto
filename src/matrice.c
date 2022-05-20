@@ -245,7 +245,7 @@ Matrix MatrixH(int nb_rows,int nb_columns)
 
 /**
  * \brief fonction qui fait l'inversion d'une matrice , par le pivot de gauss
- * \return ula matrice inverse 
+ * \return ula matrice inverse  si
  */
 Matrix pivotGaus(Matrix *m)
 {
