@@ -12,7 +12,7 @@ arr[0] = x;
 Matrix rot(Matrix *m)
 {
 	Matrix rot=newMatrix(m->nb_rows,m->nb_rows);
-	int k = 0;
+	//int k = 0;
   Elt elt ;
   int tab[m->nb_rows];
   for(int i=0 ; i<m->nb_rows;i++) tab[i]=getElt(m,0,i);

@@ -169,6 +169,7 @@ Matrix pivotGaus(Matrix *m)
               {
                 // printf("\n Elements are too small to deal with !!!");
                  inverse.valide=false;
+                 //printf(" la valeur de l'inverse  pour not est %d\n",inverse.valide);
                  return inverse;
               }
   // swapping row which has maximum jth column element
@@ -208,6 +209,7 @@ Matrix pivotGaus(Matrix *m)
 
   }
 
+  //printf(" la valeur de l'inverse est %d\n",inverse.valide);
   return inverse;
 }
 Matrix faire_U(int size_U,Matrix *h,Matrix *e,int w_erreur)
@@ -232,7 +234,8 @@ Matrix faire_U(int size_U,Matrix *h,Matrix *e,int w_erreur)
      }
   }
 
-  int *col_index = (int*) malloc(size_U*sizeof(int));//[];
+
+  int *col_index = (int*) malloc(size_U*sizeof(int));
   int id=0;
   for(i=0; i < n ; i++)
   {
@@ -243,19 +246,20 @@ Matrix faire_U(int size_U,Matrix *h,Matrix *e,int w_erreur)
   }
 
 
+
   //for(i=0; i < n ; i++) printf(" tab [%d]\n",index[i]);
   //printf("\n=====\n");
   //for(i=0; i < size_U ; i++) printf(" index [%d]\n",col_index[i]);
-  // remplir Mat U avec les bonnes collones
+   //remplir Mat U avec les bonnes collones
   Matrix mU = newMatrix(size_U,size_U);
 
   for(i=0; i<size_U; i++)
     for(j=0; j<h->nb_rows; j++)
     setElt(&mU,j,i,getElt(h,j,col_index[i]));
 
+  //free(index);
+  //free(col_index);
 
-  free(index);
-  free(col_index);
   return mU;
 
 }
@@ -266,7 +270,6 @@ int poidHamming(Matrix *m)
     for(i=0; i<m->nb_rows; i++)
         for(j=0; j<m->nb_columns; j++)
             if(getElt(m,i,j)==1) poids++;
-
     return poids;
 }
 Matrix copier_matrice(Matrix *m)
