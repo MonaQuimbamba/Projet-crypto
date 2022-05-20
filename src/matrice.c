@@ -225,6 +225,10 @@ int fillMatrixH(int nb_columns){
   return 0;
 }
 
+/**
+ * \brief fonction qui fait l'inversion d'une matrice , par le pivot de gauss
+ * \return la matrice inverse  si cela est possible
+ */
 Matrix MatrixH(int nb_rows,int nb_columns)
 {
     Matrix m;
@@ -245,7 +249,7 @@ Matrix MatrixH(int nb_rows,int nb_columns)
 
 /**
  * \brief fonction qui fait l'inversion d'une matrice , par le pivot de gauss
- * \return ula matrice inverse  si
+ * \return la matrice inverse  si cela est possible
  */
 Matrix pivotGaus(Matrix *m)
 {
