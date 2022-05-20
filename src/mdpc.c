@@ -10,7 +10,7 @@
 #include "include/polynome.h"
 #include "include/md5.h"
 
-#include "LATEST/libsodium-stable/src/libsodium/include/sodium.h"
+#include "libsodium-stable/src/libsodium/include/sodium.h"
 
 #define T 5
 

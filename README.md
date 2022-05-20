@@ -8,7 +8,7 @@
 - tar -xvf LATEST.tar.gz
 
 
-### 2 Se placer dans le dossier src/LATEST/libsodium-stable et puis lancer les commandes suivantes :
+### 2 Se placer dans le dossier src/libsodium-stable et puis lancer les commandes suivantes :
 
 - ./configure
 - make && make check

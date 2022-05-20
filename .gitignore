@@ -1,5 +1,5 @@
 # pas ajouter la lib soudium
-src/LATEST/*
+src/libsodium-stable/*
 
 # Prerequisites
 *.d

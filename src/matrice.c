@@ -1,5 +1,5 @@
 #include "include/matrice.h"
-#include "LATEST/libsodium-stable/src/libsodium/include/sodium.h"
+#include "libsodium-stable/src/libsodium/include/sodium.h"
 
 /**
  * \fn Matrix newMatrix(int nb_rows, int nb_columns)
