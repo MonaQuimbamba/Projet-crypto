@@ -3,7 +3,9 @@
 
 # Installer la lib Sodium avant de lancer le programme
 
-Se placer dans le dossier src/LATEST/libsodium-stable et puis lancer les commandes suivantes :
+### 1 Dezipper le fichier `LATEST.tar.gz`
+
+### 2 Se placer dans le dossier src/LATEST/libsodium-stable et puis lancer les commandes suivantes :
 
 - ./configure
 - make && make check
