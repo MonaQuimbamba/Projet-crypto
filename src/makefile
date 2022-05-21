@@ -1,10 +1,10 @@
 all: isd mdpc
 
 isd: isd.o matrice.o polynome.o
-	gcc -Wall -o isd isd.o matrice.o polynome.o -lsodium
+	gcc -Wall -o isd isd.o matrice.o polynome.o  -lsodium
 
 mdpc: mdpc.o matrice.o polynome.o md5.o
-	gcc -Wall -o mdpc mdpc.o matrice.o polynome.o md5.o -lsodium
+	gcc -Wall -o mdpc mdpc.o matrice.o polynome.o md5.o   -lsodium
 
 isd.o : isd.c
 	gcc -Wall -c isd.c

@@ -11,7 +11,6 @@
 #include "include/md5.h"
 
 #include "libsodium-stable/src/libsodium/include/sodium.h"
-
 #define T 5
 
 
@@ -184,8 +183,8 @@ int main(int argc, char const *argv[]) {
 
 while(goIfnotInverse){
 
-	ho= createPolynome(n,weight_h);
-	h1 = createPolynome(n,weight_h);
+	ho= createVecteur(n,weight_h);
+	h1 = createVecteur(n,weight_h);
 	Ho = rot(&ho);
 	inverse_ho = pivotGaus(&Ho);
 	if(inverse_ho.valide==true){
@@ -194,18 +193,14 @@ while(goIfnotInverse){
 		h = multiplication(&inverse_ho,&h1);
 		H = rot(&h);
 		// Bob
-		eo = createPolynome(n,weight_e);
-		e1 = createPolynome(n,weight_e);
+		eo = createVecteur(n,weight_e);
+		e1 = createVecteur(n,weight_e);
 		c1 = multiplication(&H,&e1);
 		c = addition(&eo,&c1);
 		s = multiplication(&Ho,&c);
 
-
-		//printf("\nmatrice s est  [%d][%d] =\n", s.nb_rows, s.nb_columns);
-		//printMatrix(&s);
-	//	Matrix eo_e1 = bitFlipping(&ho,&h1,&s,weight_h);
-
-		//if(eo_e1.valide==true)   printMatrix(&eo_e1);
+		Matrix eo_e1 = bitFlipping(&ho,&h1,&s,weight_h);
+		if(eo_e1.valide==true)   printMatrix(&eo_e1);
 
 	}
 

@@ -61,7 +61,7 @@ int main(int argc, char const *argv[]) {
   printf("\nmatrice H est  [%d][%d] =\n", h.nb_rows, h.nb_columns);
   //printMatrix(&h);
 
-  Matrix e = createPolynome(n,w_erreur);
+  Matrix e = createVecteur(n,w_erreur);
   printf("\nle vecteur e est  [%d][%d] =\n", e.nb_rows, e.nb_columns);
   //Matrix e_trans = transpose(&e);
   //printMatrix(&e_trans);

@@ -147,4 +147,9 @@ Matrix concatenationMatrix(Matrix *u,Matrix *v);
  */
 Matrix copier_matrice(Matrix *m);
 
+/**
+ * \brief fonction qui permet de créer un polynôme , dans notre cas un polynôme est representé par un vecteur
+ * \return lae vecteur  */
+Matrix createVecteur(int degre,int w);
+
 #endif

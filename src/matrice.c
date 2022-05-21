@@ -127,28 +127,37 @@ Matrix MatrixH(int nb_rows,int nb_columns)
 Matrix pivotGaus(Matrix *m)
 {
 
-  //int augmentedmatrix[maximum][2*maximum];
-  //int *augmentedmatrix = (int *)malloc(maximum * maximum*2 * sizeof(int));
 
-  int augmentedmatrix[maximum][2*maximum];
+
+  Matrix augmentedmatrix = newMatrix(maximum,2*maximum);
+  //int augmentedmatrix[maximum][2*maximum];
   int temporary, r ;
   int i, j, k, dimension, temp;
   dimension=m->nb_rows;
 
   Matrix inverse = newMatrix(dimension,dimension);
   inverse.valide=true;
+  Elt elt;
+  //printf(" passed 1 lig %d et col %d et dim %d  \n",m->nb_rows,m->nb_columns,dimension);
   for(i=0; i<dimension; i++){
     for(j=0; j<dimension; j++){
-      augmentedmatrix[i][j]=getElt(m,i,j);
+      //printf("[%d][%d]\n",i,j );
+      //augmentedmatrix[i][j]= 1 ;
+       elt = getElt(m,i,j);
+       setElt(&augmentedmatrix,i,j,elt);
     }
+
   }
+
   for(i=0;i<dimension; i++){
     for(j=dimension; j<2*dimension; j++){
       if(i==j%dimension){
-           augmentedmatrix[i][j]=1;
+          // augmentedmatrix[i][j]=1;
+          setElt(&augmentedmatrix,i,j,1);
       }
       else{
-         augmentedmatrix[i][j]=0;
+         //augmentedmatrix[i][j]=0;
+         setElt(&augmentedmatrix,i,j,0);
       }
     }
   }
@@ -159,13 +168,13 @@ Matrix pivotGaus(Matrix *m)
   {
     temp=j;
    for(i=j+1; i<dimension; i++){
-      if(augmentedmatrix[i][j]>augmentedmatrix[temp][j])temp=i;
+      if( getElt(&augmentedmatrix,i,j)> getElt(&augmentedmatrix,temp,j) ) temp=i;
    }
 
 
 
 
-   if(abs(augmentedmatrix[temp][j])<minvalue)
+   if(abs(getElt(&augmentedmatrix,temp,j)<minvalue))
               {
                 // printf("\n Elements are too small to deal with !!!");
                  inverse.valide=false;
@@ -176,24 +185,28 @@ Matrix pivotGaus(Matrix *m)
    if(temp!=j)
              for(k=0; k<2*dimension; k++)
              {
-             temporary=augmentedmatrix[j][k] ;
-             augmentedmatrix[j][k]=augmentedmatrix[temp][k] ;
-             augmentedmatrix[temp][k]=temporary ;
+             temporary= getElt(&augmentedmatrix,j,k);//augmentedmatrix[j][k] ;
+             elt = getElt(&augmentedmatrix,temp,k);
+             setElt(&augmentedmatrix,j,k,elt);
+             //augmentedmatrix[j][k]=augmentedmatrix[temp][k] ;
+             //augmentedmatrix[temp][k]=temporary ;
+             setElt(&augmentedmatrix,temp,k,temporary);
              }
  // performing row operations to form required identity matrix out of the input matrix
    for(i=0; i<dimension; i++)
              if(i!=j){
-             r=augmentedmatrix[i][j];
+             r= getElt(&augmentedmatrix,i,j); //augmentedmatrix[i][j];
              for(k=0; k<2*dimension; k++){
-
-               augmentedmatrix[i][k]= abs((int) (augmentedmatrix[i][k] - (augmentedmatrix[j][k]/augmentedmatrix[j][j])*r) % 2);
-
+               Elt v1= getElt(&augmentedmatrix,i,k);
+               Elt v2= (getElt(&augmentedmatrix,j,k)/getElt(&augmentedmatrix,j,j)*r);
+              // augmentedmatrix[i][k]= abs((int) (augmentedmatrix[i][k] - (augmentedmatrix[j][k]/augmentedmatrix[j][j])*r) % 2);
+              setElt(&augmentedmatrix,i,k,abs((int) (v1-v2)%2));
              }
 
              }
              else{
-             r=augmentedmatrix[i][j];
-             for(k=0; k<2*dimension; k++) augmentedmatrix[i][k]/=r ;
+             r=  getElt(&augmentedmatrix,i,j);  //augmentedmatrix[i][j];
+             for(k=0; k<2*dimension; k++) setElt(&augmentedmatrix,i,k,getElt(&augmentedmatrix,i,k)/r); //augmentedmatrix[i][k]/=r ;
              }
 
   }
@@ -203,7 +216,9 @@ Matrix pivotGaus(Matrix *m)
     int val=0;
    for(j=dimension; j<2*dimension; j++)
    {
-     setElt(&inverse,i,val,augmentedmatrix[i][j]);
+      elt =  getElt(&augmentedmatrix,i,j);
+     //setElt(&inverse,i,val,augmentedmatrix[i][j]);
+     setElt(&inverse,i,val,elt);
      val++;
    }
 
@@ -304,4 +319,19 @@ Matrix concatenationMatrix(Matrix *u,Matrix *v)
    }
 
    return concat;
+}
+Matrix createVecteur(int degre,int w)
+{
+    Matrix m;
+    m = newMatrix(degre, 1);
+    uint32_t elt;
+    int i =0;
+    while(i < w){
+       elt = randombytes_uniform(degre);
+       if(getElt(&m,0,elt)!=1){
+         setElt(&m,0,elt, 1);
+         i++;
+       }
+    }
+    return m;
 }
